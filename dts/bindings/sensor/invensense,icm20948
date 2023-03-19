@@ -1,0 +1,16 @@
+# Copyright (c) 2020 George Gkinis
+ # Copyright (c) 2021 Jan Gnip
+ # SPDX-License-Identifier: Apache-2.0
+
+description: |
+   invensense,icm20948
+
+compatible: "invensense,icm20948"
+
+include: base.yaml
+
+properties:
+    sample-fetch-timeout-ms:
+    type: int
+    required: false
+    default: 700
