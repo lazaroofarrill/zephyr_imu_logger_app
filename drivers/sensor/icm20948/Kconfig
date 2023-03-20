@@ -1,9 +1,0 @@
-# ICM20948 IMU Sensor Options
-
-# SPDX-License-Identifier: Apache-2.0
-
-config HX711
-    bool "ICM-20948"
-    default y
-    depends on DT_HAS_INVENSENSE_ICM20948_ENABLED
-    depends on GPIO
