@@ -34,6 +34,6 @@ void main(void) {
     while (1) {
         imu_read_sensors();
         printk("%20d%20d%20d\n", IMU.accX, IMU.accY, IMU.accZ);
-        k_sleep(K_MSEC(10));
+        k_sleep(K_USEC(100));
     }
 }
