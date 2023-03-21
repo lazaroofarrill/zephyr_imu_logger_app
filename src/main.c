@@ -1,6 +1,7 @@
 #include <zephyr/kernel.h>
 #include "zephyr/drivers/i2c.h"
 #include "i2c_utils.h"
+#include "icm20948.h"
 
 
 void main(void) {
@@ -25,5 +26,14 @@ void main(void) {
             printk(" %.2x", i);
         } else
             printk(" --");
+    }
+
+    init_imu(0x68);
+
+    printk("\n");
+    while (1) {
+        imu_read_sensors();
+        printk("%20d%20d%20d\n", IMU.accX, IMU.accY, IMU.accZ);
+        k_sleep(K_MSEC(10));
     }
 }
