@@ -1,10 +1,15 @@
 #include <zephyr/kernel.h>
-#include "zephyr/drivers/i2c.h"
 #include "i2c_utils.h"
 #include "icm20948.h"
+#include "zephyr/logging/log.h"
+#include "sdcard.h"
+#include "zephyr/drivers/spi.h"
 
+LOG_MODULE_REGISTER(imu_logger, LOG_LEVEL_INF);
 
 void main(void) {
+    int err;
+
     const struct device *const i2c_dev = DEVICE_DT_GET(DT_ALIAS(board_i2c));
     printk("\n");
 
@@ -28,8 +33,31 @@ void main(void) {
             printk(" --");
     }
 
-    init_imu(0x68);
+    //Starting imu
+    err = init_imu(0x68);
+    if (err) {
+        LOG_ERR("\nError initializing IMU (0x%x)\n", err);
+    }
 
+    printk("\n");
+    //Starting SD card
+    static const char *disk_pdrv = "SD";
+
+    err = disk_access_init(disk_pdrv);
+    if (err) {
+        LOG_ERR("\nStorage init ERROR! (%d)\n", err);
+        return;
+    }
+
+    mp.mnt_point = disk_mount_pt;
+
+    err = fs_mount(&mp);
+    if (err != FR_OK) {
+        LOG_ERR("Error mounting disk.");
+        return;
+    }
+
+    return;
     printk("\n");
     while (1) {
         imu_read_sensors();

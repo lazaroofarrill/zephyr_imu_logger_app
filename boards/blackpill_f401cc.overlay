@@ -3,3 +3,19 @@
         board-i2c = &i2c1;
     };
 };
+
+&spi1 {
+        status = "okay";
+        cs-gpios=<&gpiob 2 GPIO_ACTIVE_LOW>;
+
+         sdhc0: sdhc@0 {
+                compatible = "zephyr,sdhc-spi-slot";
+                reg = <0>;
+                status = "okay";
+                mmc {
+                    compatible = "zephyr,sdmmc-disk";
+                    status = "okay";
+                };
+                spi-max-frequency = <24000000>;
+        };
+    };

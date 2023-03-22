@@ -2,9 +2,13 @@
 // Created by Lazaro O'Farrill on 09/03/2023.
 //
 
+#include <zephyr/logging/log.h>
 #include "zephyr/kernel.h"
 #include "icm20948.h"
 #include "icm20948-register-map.h"
+
+LOG_MODULE_DECLARE(imu_logger);
+
 
 T_IMU IMU = {
         .i2c_dev = NULL,
@@ -45,6 +49,7 @@ static int self_test();
 int init_imu(uint8_t address) {
     int err;
     if (address != 0x68 && address != 0x69) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return -EINVAL;
     }
 
@@ -52,35 +57,43 @@ int init_imu(uint8_t address) {
     IMU.i2c_dev = DEVICE_DT_GET(DT_ALIAS(board_i2c));
 
     if (!device_is_ready(IMU.i2c_dev)) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return -ENXIO;
     }
 
     err = reset();
     if (err) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return err;
     }
 
-    k_sleep(K_MSEC(1000));
+    k_sleep(K_MSEC(1));
 
     err = wake_up();
     if (err) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return err;
     }
 
+
     err = config_gyro();
     if (err) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return err;
     }
 
     err = config_accel();
     if (err) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return err;
     }
 
     err = self_test();
     if (err) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return err;
     }
+    return err;
 }
 
 int imu_read_sensors() {
@@ -339,7 +352,7 @@ int self_test() {
     const uint16_t testDisabledAxis[3] = {IMU.accX, IMU.accY, IMU.accZ};
 
     for (int i = 0; i < 3; i++) {
-        printk("Self test response %c: %d --- Expected %d",
+        printk("\nSelf test response %c: %d --- Expected %d",
                axis[i], testAxis[i] - testDisabledAxis[i],
                selfTestAccelRef[i]);
     }
