@@ -14,9 +14,8 @@ static FATFS fatFs;
 
 static struct fs_mount_t mp = {
         .type = FS_FATFS,
-        .fs_data = &fatFs
+        .fs_data = &fatFs,
+        .mnt_point = "/SD:"
 };
-
-static const char *disk_mount_pt = "/SD";
 
 #endif //IMU_LOGGER_SDCARD_H

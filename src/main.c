@@ -3,7 +3,8 @@
 #include "icm20948.h"
 #include "zephyr/logging/log.h"
 #include "sdcard.h"
-#include "zephyr/drivers/spi.h"
+#include "stdio.h"
+#include "zephyr/sys/util.h"
 
 LOG_MODULE_REGISTER(imu_logger, LOG_LEVEL_INF);
 
@@ -49,19 +50,40 @@ void main(void) {
         return;
     }
 
-    mp.mnt_point = disk_mount_pt;
-
     err = fs_mount(&mp);
     if (err != FR_OK) {
         LOG_ERR("Error mounting disk.");
         return;
     }
 
-    return;
     printk("\n");
+
+    struct fs_file_t readsFile;
+
+    fs_file_t_init(&readsFile);
+
+    const char *readsFileName = "/SD:/reads.csv";
+
+    fs_open(&readsFile, readsFileName, (FS_O_CREATE | FS_O_APPEND));
+    fs_close(&readsFile);
+
+    char buffer[255] = "";
+
+
     while (1) {
         imu_read_sensors();
-        printk("%20d%20d%20d\n", IMU.accX, IMU.accY, IMU.accZ);
-        k_sleep(K_USEC(100));
+        sprintf((char *) buffer, "%d,%d,%d\n", IMU.accX, IMU.accY, IMU.accZ);
+        utf8_trunc(buffer);
+
+        printk("%s", buffer);
+
+        fs_open(&readsFile, readsFileName, (FS_O_APPEND | FS_O_WRITE));
+
+        fs_write(&readsFile, buffer, strlen(buffer));
+
+        fs_close(&readsFile);
+
+        k_sleep(K_USEC(2500));
     }
+
 }
