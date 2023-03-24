@@ -1,0 +1,21 @@
+description: ...
+compatible: "invensense,icm20948"
+
+include: [sensor-device.yaml, i2c-device.yaml]
+
+properties:
+  int-gpios:
+    type: phandle-array
+    description: |
+      The INT signal default configuration is active-high.  The
+      property value should ensure the flags properly describe the
+      signal that is presented to the driver.
+
+  reg:
+    type: int
+    required: true
+    description: |
+      The address of the sensor. Can be 0x68 or 0x69. The value of AD0 is the LSB.
+    enum:
+      - 0x68
+      - 0x69

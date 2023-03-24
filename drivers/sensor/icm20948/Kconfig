@@ -1,0 +1,14 @@
+config ICM20948
+    bool "ICM-20948 IMU"
+    default $(dt_compat_enabled,$(DT_COMPAT_INVENSENSE_ICM20948))
+    depends on GPIO && I2C
+
+    help
+        ICM-20948 IMU.
+
+    config JM101_TRIGGER
+        bool "ICM-20948 interrupt support"
+        depends on ICM20948
+        help
+            When enabled, the ICM-20948 can be provided with an interrupt GPIO to
+            trigger data ready event.
