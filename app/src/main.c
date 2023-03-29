@@ -67,6 +67,7 @@ void main(void) {
     fs_open(&readsFile, readsFileName, (FS_O_CREATE | FS_O_APPEND));
     fs_close(&readsFile);
 
+
     char buffer[255] = "";
 
 

@@ -16,6 +16,14 @@
                 compatible = "zephyr,sdmmc-disk";
                 status = "okay";
             };
-            spi-max-frequency = <12000000>;
+            spi-max-frequency = <7000000>;
+    };
+};
+
+&i2c1 {
+    icm20948 {
+        compatible = "invensense,icm20948";
+        label = "ICM20948";
+
     };
 };
