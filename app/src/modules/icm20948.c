@@ -9,7 +9,6 @@
 
 LOG_MODULE_DECLARE(imu_logger);
 
-
 T_IMU IMU = {
         .i2c_dev = NULL,
         .address = 0,
@@ -83,6 +82,12 @@ int init_imu(uint8_t address) {
     }
 
     err = config_accel();
+    if (err) {
+        LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
+        return err;
+    }
+
+    err= config_mag();
     if (err) {
         LOG_ERR("Error: %s:%d. Error code(%d)", __FILE__, __LINE__, err);
         return err;
